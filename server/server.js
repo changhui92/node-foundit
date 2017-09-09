@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 mongoose.Promise = global.Promise;
 
