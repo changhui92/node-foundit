@@ -16,19 +16,29 @@ var UserSchema = new mongoose.Schema({
     unique: true,
     minlength: 6
   },
-  faculty: {
-    type: String,
-    required: true
-  },
-  school: {
-    type: String,
-    required: true
-  },
+  // faculty: {
+  //   type: String,
+  //   required: true
+  // },
+  // school: {
+  //   type: String,
+  //   required: true
+  // },
   email:{
     type: String,
     required: true,
     unique: true
-  }
+  },
+  tokens:[{
+    access:{
+      type: String,
+      required: true
+    },
+    token:{
+      type: String,
+      required: true
+    }
+  }]
 });
 
 UserSchema.methods.toJSON = function() {
@@ -37,6 +47,20 @@ UserSchema.methods.toJSON = function() {
 
   return _.pick(userObject, ['_id','matric']);
 }
+
+UserSchema.methods.generateAuthToken = function() {
+  var user = this;
+  var access = 'auth';
+
+  var token = jwt.sign({email: user.email, access}, 'temp').toString();
+
+  user.tokens.push({access, token});
+
+  user.save().then(() => {
+    return token;
+  });
+}
+
 
 var User = mongoose.model('User', UserSchema);
 
