@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 var {User} = require('./models/user');
+var {Lost} = require('./models/lost');
+var {Found} = require('./models/found');
 var {authenticate} = require('./middleware/authenticate');
 
 mongoose.Promise = global.Promise;
@@ -21,7 +23,6 @@ app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
 
-// POST /users
 app.post('/users', (req, res) => {
   var body = _.pick(req.body, ['matric', 'password','email']);
   var user = User(body);
@@ -30,6 +31,28 @@ app.post('/users', (req, res) => {
     return generateAuthToken;
   }).then((token) => {
     res.header('x-auth', token).send(user);
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
+});
+
+app.post('/lost', authenticate, (req,res) => {
+  var body = _.pick(req.body, ['name', 'description', 'creator', 'status']);
+  var lost = Lost(body);
+
+  lost.save().then((lost) => {
+    res.send(lost);
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
+});
+
+app.post('/found', authenticate, (req,res) => {
+  var body = _.pick(req.body, ['name', 'description', 'creator', 'status']);
+  var found = Found(body);
+
+  lost.save().then((found) => {
+    res.send(found);
   }).catch((e) => {
     res.status(400).send(e);
   })

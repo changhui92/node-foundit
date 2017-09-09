@@ -9,6 +9,14 @@ var FoundSchema = new mongoose.Schema({
   description:{
     type: String,
     trim: true
+  },
+  creator:{
+    type: String,
+    required: true
+  },
+  status:{
+    type: String,
+    required: true
   }
 });
 
