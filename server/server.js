@@ -9,7 +9,6 @@ var {Found} = require('./models/found');
 var {authenticate} = require('./middleware/authenticate');
 
 mongoose.Promise = global.Promise;
-
 mongoose.connect((process.env.MONGO_URI || 'mongodb://localhost:27017/Foundit'), {
   useMongoClient: true
 });
@@ -51,7 +50,7 @@ app.post('/found', authenticate, (req,res) => {
   var body = _.pick(req.body, ['name', 'description', 'creator', 'status']);
   var found = Found(body);
 
-  lost.save().then((found) => {
+  found.save().then((found) => {
     res.send(found);
   }).catch((e) => {
     res.status(400).send(e);
